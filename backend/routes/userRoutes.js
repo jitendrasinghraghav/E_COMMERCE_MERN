@@ -10,5 +10,10 @@ router.post('/verify', verify)
 router.post('/reverify', reVerify)
 router.post('/login', login)
 router.post('/logout',isAuthenticated, logout)
+router.post('/forgot-password',forgotPassword)
+router.post('/verify-OTP/:email',verifyOTP)
+router.post('/change-password/:email',changePassword)
+router.get('/all-user',isAuthenticated,isAdmin,allUser)
+router.get('get-user/:userId',getUserById)
 
 export default router

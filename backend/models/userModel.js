@@ -15,7 +15,8 @@ const userSchema = new mongoose.Schema({
     address:{type:String},
     city:{type:String},
     zipCode:{type:String},
-    phoneNO:{type:String},
+    phoneNo:{type:String},
+    profilePic: { type: String, default: "" },
 },{timestamps:true})
 
 export const User = mongoose.model("User",userSchema)

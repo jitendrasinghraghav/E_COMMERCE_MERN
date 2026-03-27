@@ -28,9 +28,9 @@ const ProductCard = ({ product, loading }) => {
       {
         loading ? (
           <div className='px-2 space-y-2 my-2'>
-            <Skeleton className='w-[200px] h-4' />
-            <Skeleton className='w-[100px] h-4' />
-            <Skeleton className='w-[150px] h-9' />
+            <Skeleton className='w-50 h-4' />
+            <Skeleton className='w-25 h-4' />
+            <Skeleton className='w-37.5 h-9' />
           </div>
         ) : (
           <div className='px-2 space-y-1'>

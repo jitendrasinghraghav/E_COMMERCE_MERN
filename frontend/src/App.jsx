@@ -10,9 +10,9 @@ import VerifyEmail from './pages/verifyEmail'
 import Footer from './components/footer'
 import Profile from './pages/Profile'
 import Products from './pages/Products'
+import Cart from './pages/Cart'
 
-// App.jsx
-console.log("test");
+
 const router = createBrowserRouter([
    {
     path:'/',
@@ -41,6 +41,10 @@ const router = createBrowserRouter([
   {
     path:'/products',
     element:<><Navbar/><Products/></>
+  },
+  {
+    path:'/cart',
+    element:<><Navbar/><Cart/></>
   },
 ])
 

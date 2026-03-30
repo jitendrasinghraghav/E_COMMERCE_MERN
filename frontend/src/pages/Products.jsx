@@ -17,7 +17,6 @@ import { setProducts } from '@/redux/productSlice';
 
 const Products = () => {
     const { products} = useSelector(store => store.product)
-    console.log(products)
 
     // 2. State definition
     const [allProducts, setAllProducts] = useState([]);

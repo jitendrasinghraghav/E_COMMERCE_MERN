@@ -56,7 +56,7 @@ const Navbar = () => {
           </ul>
           <Link to={'/cart'} className='relative'>
             <ShoppingCart />
-            <span className='bg-pink-500 rounded-full absolute text-white -top-3 -right-5 px-2'>{cart.items.length}</span>
+            <span className='bg-pink-500 rounded-full absolute text-white -top-3 -right-5 px-2'>{cart?.items?.length ? cart?.items?.length : 0} </span>
           </Link>
           {
             user ? <Button onClick={logoutHandler} className='bg-pink-600 text-white cursor-pointer'>Logout</Button> : <Button onClick={()=>navigate('/login')} className='bg-gradient-to-tl from-blue-600 to-purple-600 text-white cursor-pointer'>Login</Button>

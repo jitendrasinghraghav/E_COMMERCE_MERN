@@ -118,29 +118,55 @@ export const updateQuantity = async (req, res) => {
 };
 
 
+// export const removeFromCart = async (req, res) => {
+//   try {
+//     const userId = req.id;
+//     const { productId } = req.body;
+
+//     let cart = await Cart.findOne({ userId });
+//     if (!cart) return res.status(404).json({
+//       success: false,
+//       message: "Cart not found"
+//     })
+
+//     cart.items = cart.items.filter(item => item.productId.toString() !== productId)
+//     cart.totalPrice = cart.items.reduce((acc, item) => acc + item.price * item.quantity, 0)
+
+//     await cart.save()
+//     res.status(200).json({
+//       success: true,
+//       cart
+//     })
+//   } catch (error) {
+//     return res.status(500).json({
+//       success: false,
+//       message: error.message
+//     })
+//   }
+// }
+
 export const removeFromCart = async (req, res) => {
   try {
     const userId = req.id;
     const { productId } = req.body;
 
     let cart = await Cart.findOne({ userId });
-    if (!cart) return res.status(404).json({
-      success: false,
-      message: "Cart not found"
-    })
+    if (!cart) return res.status(404).json({ success: false, message: "Cart not found" });
 
-    cart.items = cart.items.filter(item => item.productId.toString() !== productId)
-    cart.totalPrice = cart.items.reduce((acc, item) => acc + item.price * item.quantity, 0)
+    cart.items = cart.items.filter(item => item.productId.toString() !== productId);
+    cart.totalPrice = cart.items.reduce((acc, item) => acc + item.price * item.quantity, 0);
 
-    await cart.save()
+    await cart.save();
+    
+    // 🔥 YE LINE ADD KARO: Taaki frontend ko product info wapas mile
+    const updatedCart = await Cart.findById(cart._id).populate("items.productId");
+
     res.status(200).json({
       success: true,
-      cart
-    })
+      message: "Item removed",
+      cart: updatedCart // Updated cart bhejo
+    });
   } catch (error) {
-    return res.status(500).json({
-      success: false,
-      message: error.message
-    })
+    return res.status(500).json({ success: false, message: error.message });
   }
 }

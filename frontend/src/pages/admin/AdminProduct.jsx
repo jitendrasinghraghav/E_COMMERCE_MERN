@@ -47,6 +47,23 @@ const AdminProduct = () => {
     const accessToken = localStorage.getItem("accessToken")
     const dispatch = useDispatch();
     const [open, setOpen] = useState(false);
+    const [searchTerm, setSearchTerm] = useState("")
+    const [sortOrder, setSortOrder] = useState("")
+
+
+    let filteredProducts = products.filter((product) =>
+        product.productName.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        product.brand.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        product.category.toLowerCase().includes(searchTerm.toLowerCase())
+    )
+
+    if (sortOrder === 'lowToHigh') {
+        filteredProducts = [...filteredProducts].sort((a, b) => a.productPrice - b.productPrice)
+    }
+
+    if (sortOrder === 'highToLow') {
+        filteredProducts = [...filteredProducts].sort((a, b) => b.productPrice - a.productPrice)
+    }
 
     const handleChange = (e) => {
         const { name, value } = e.target
@@ -126,12 +143,14 @@ const AdminProduct = () => {
                 <div className='relative bg-white rounded-lg'>
                     <Input
                         type='text'
+                        value={searchTerm}
+                        onChange={(e) => setSearchTerm(e.target.value)}
                         placeholder="Search Product..."
                         className="w-[400px] pr-10"
                     />
                     <Search className='absolute right-3 top-2.5 text-gray-500 w-5 h-5' />
                 </div>
-                <Select>
+                <Select onValueChange={(value) => setSortOrder(value)}>
                     <SelectTrigger className="w-[200px] bg-white">
                         <SelectValue placeholder="Sort by Price" />
                     </SelectTrigger>
@@ -145,8 +164,8 @@ const AdminProduct = () => {
             </div>
 
             {/* Product List */}
-            {products && products.length > 0 ? (
-                products.map((product, index) => (
+            {filteredProducts && filteredProducts.length > 0 ? (
+                filteredProducts.map((product, index) => (
                     <Card key={product._id || index} className="p-4 shadow-sm">
                         <div className='flex items-center justify-between'>
                             <div className='flex gap-4 items-center'>
@@ -225,7 +244,6 @@ const AdminProduct = () => {
                                                     onChange={handleChange}
                                                     placeholder="Enter brief description of product" />
                                             </div>
-
                                             <ImageUpload productData={editProduct} setProductData={setEditProduct} />
                                         </div>
                                         <DialogFooter>
@@ -254,14 +272,10 @@ const AdminProduct = () => {
                                         </AlertDialogHeader>
                                         <AlertDialogFooter>
                                             <AlertDialogCancel>Cancel</AlertDialogCancel>
-                                            <AlertDialogAction onClick={()=>deleteProductHandler(product._id)}>Continue</AlertDialogAction>
+                                            <AlertDialogAction onClick={() => deleteProductHandler(product._id)}>Continue</AlertDialogAction>
                                         </AlertDialogFooter>
                                     </AlertDialogContent>
                                 </AlertDialog>
-
-                                {/* <Button variant="ghost" size="icon" className="text-red-500 hover:text-red-600">
-                                    <Trash2 className='w-5 h-5' />
-                                </Button> */}
                             </div>
                         </div>
                     </Card>

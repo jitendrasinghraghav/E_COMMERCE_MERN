@@ -203,7 +203,7 @@ const Cart = () => {
                     <Button variant='outline' className="hover:bg-gray-100">Apply</Button>
                   </div>
 
-                  <Button className='w-full bg-pink-600 hover:bg-pink-700 text-white font-bold py-6 text-lg shadow-lg transition-all active:scale-95'>
+                  <Button onClick={()=>navigate('/address')} className='w-full bg-pink-600 hover:bg-pink-700 text-white font-bold py-6 text-lg shadow-lg transition-all active:scale-95'>
                     PLACE ORDER
                   </Button>
                   <Button variant='outline' className='w-full bg-transparent'>

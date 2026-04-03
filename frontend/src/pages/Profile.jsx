@@ -24,6 +24,7 @@ import userLogo from "../assets/userLogo.png"
 import { setUser } from '@/redux/userSlice'
 import { toast } from 'sonner'
 import axios from 'axios'
+import MyOrder from './MyOrder'
 
 
 
@@ -225,7 +226,9 @@ const Profile = () => {
                     </div>
                 </TabsContent>
 
-                <TabsContent value="Orders">Change your password here.</TabsContent>
+                <TabsContent value="Orders">
+                    <MyOrder/>
+                </TabsContent>
             </Tabs>
         </div>
     )

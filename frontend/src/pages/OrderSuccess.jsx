@@ -26,10 +26,16 @@ const OrderSuccess = () => {
         {/* Buttons */}
         <div className="mt-6 flex flex-col gap-3">
           <button
-            onClick={() => navigate("/")}
+            onClick={() => navigate("/products")}
             className="w-full bg-pink-600 text-white py-3 rounded-xl hover:bg-pink-700 transition"
           >
-            Go to Home
+            Continue Shopping
+          </button>
+          <button
+            onClick={() => navigate("/orders")}
+            className="w-full border border-pink-600 bg-pink-600 py-3 rounded-xl hover:bg-pink-50 transition"
+          >
+            View My Orders
           </button>
         </div>
       </div>

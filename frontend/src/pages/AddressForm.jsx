@@ -1,11 +1,15 @@
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
-import { addAddress, deleteAddress, setSelectedAddress } from '@/redux/productSlice'
+import { addAddress, deleteAddress, setCart, setSelectedAddress } from '@/redux/productSlice'
 import { Label } from '@/components/ui/label'
 import { Separator } from '@/components/ui/separator'
 import React, { useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
+import axios from 'axios'
+import { toast } from 'sonner'
+import {useNavigate } from 'react-router-dom'
+import { Contact } from 'lucide-react'
 
 const AddressForm = () => {
     // Initial state for form fields
@@ -26,6 +30,7 @@ const AddressForm = () => {
     // Toggle form visibility based on existing addresses
     const [showForm, setShowForm] = useState(addresses?.length > 0 ? false : true)
     const dispatch = useDispatch()
+    const navigate = useNavigate()
 
     // Handling input changes dynamically
     const handleChange = (e) => {
@@ -41,6 +46,97 @@ const AddressForm = () => {
     const shipping = subtotal > 50 ? 0 : 10
     const tax = parseFloat((subtotal * 0.05).toFixed(2))
     const total = subtotal + shipping + tax
+
+
+    const handlePayment = async () => {
+        const accessToken = localStorage.getItem("accessToken");
+        try {
+            const { data } = await axios.post(`${import.meta.env.VITE_URL}/api/v1/orders/create-order`, {
+                products: cart?.items?.map(item => ({
+                    productId: item.productId._id,
+                    quantity: item.quantity
+                })),
+                tax,
+                shipping,
+                amount: total,
+                currency: "INR"
+            }, {
+                headers: { Authorization: `Bearer ${accessToken}` }
+            });
+
+            if (!data.success) return toast.error("Something went wrong");
+
+            const options = {
+                key: import.meta.env.VITE_RAZORPAY_KEY_ID,
+                amount: data.order.amount,
+                currency: data.order.currency,
+                order_id: data.order.id, // Order ID from backend
+                name: "Your Store Name",
+                description: "Test Transaction",
+                handler: async function (response) {
+                    try {
+                        const verifyRes = await axios.post(
+                            `${import.meta.env.VITE_URL}/api/v1/orders/verify-payment`,
+                            response,
+                            { headers: { Authorization: `Bearer ${accessToken}` } }
+                        );
+
+                        if (verifyRes.data.success) {
+                            toast.success("✅ Payment Successful!");
+                            dispatch(setCart({ items: [], totalPrice: 0 }))
+                            navigate("/order-success")
+                        } else {
+                            toast.error("❌ Payment Verification Failed")
+                        }
+                    } catch (error) {
+                        toast.error("Error verifying payment");
+                    }
+                },
+                modal: {
+                    ondismiss: async function () {
+                        // Handle user closing the popup
+                        await axios.post(`${import.meta.env.VITE_URL}/api/v1/orders/verify-payment`, {
+                            razorpay_order_id: data.order.id,
+                            paymentFailed: true
+                        }, {
+                            headers: { Authorization: `Bearer ${accessToken}` }
+                        }
+                        )
+                        toast.error("Payment Cancelled or Failed")
+                    }
+                },
+                prefill: {
+                    name: formData.fullName,
+                    email: formData.email,
+                    Contact: formData.phone
+                },
+                theme: {
+                    color: "#F472B6",
+                },
+            };
+
+            const rzp = new window.Razorpay(options);
+
+            rzp.on('payment.failed', async function (response) {
+                // Send failure info to backend to update order status to "Failed"
+                axios.post(`${import.meta.env.VITE_URL}/api/v1/orders/verify-payment`, {
+                    paymentFailed: true,
+                    razorpay_order_id: data.order.id,
+                }, {
+                    headers: { Authorization: `Bearer ${accessToken}` }
+                });
+
+                toast.error("Payment Failed. Please try again");
+            });
+
+            rzp.open();
+
+        } catch (error) {
+            console.log(error);
+            toast.error("Something went Wrong while processing payment");
+        }
+    };
+
 
     return (
         <div className='max-w-6xl mx-auto grid place-items-center p-2'>
@@ -170,7 +266,9 @@ const AddressForm = () => {
                                     })
                                 }
                                 <Button variant='outline' className='w-full' onClick={() => setShowForm(true)}>+ Add New Address</Button>
-                                <Button disabled={selectedAddress === null} className="w-full bg-pink-600">Procced to Checkout</Button>
+                                <Button 
+                                onClick={handlePayment}
+                                disabled={selectedAddress === null} className="w-full bg-pink-600">Procced to Checkout</Button>
                             </div>
                         )
                     }

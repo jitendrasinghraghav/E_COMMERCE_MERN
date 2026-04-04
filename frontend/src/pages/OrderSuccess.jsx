@@ -31,12 +31,13 @@ const OrderSuccess = () => {
           >
             Continue Shopping
           </button>
-          <button
+          {/* <button
             onClick={() => navigate("/orders")}
+            onClick={() => navigate(`/profile/${user?._id}`, { state: { tab: "Orders" } })}
             className="w-full border border-pink-600 bg-pink-600 py-3 rounded-xl hover:bg-pink-50 transition"
           >
             View My Orders
-          </button>
+          </button> */}
         </div>
       </div>
     </div>

@@ -66,8 +66,8 @@ const AdminUsers = () => {
                   </div>
                 </div>
                 <div className='flex gap-3 mt-3'>
-                  <Button onClick={()=>navigate(`/dashboard/users/${user?._id}`)    }><Edit />Edit</Button>
-                  <Button><Eye />Show Order</Button>
+                  <Button onClick={()=>navigate(`/dashboard/users/${user?._id}`)}><Edit />Edit</Button>
+                  <Button onClick={()=>navigate(`/dashboard/users/orders/${user?._id}`)}><Eye />Show Order</Button>
                 </div>
               </div>
             )
